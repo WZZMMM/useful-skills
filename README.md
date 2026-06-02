@@ -9,3 +9,7 @@
 
 ## `mineru-pdf-re` and `paddle-pdf-re`
 
+- [MinerU](https://mineru.net/) and [PaddleOCR](https://aistudio.baidu.com/paddleocr) are currently the two most powerful OCR tools
+- Both provide high-precision PDF-to-Markdown conversion capabilities
+- These skills encapsulate their API usage workflows for easy invocation in Claude Code
+
