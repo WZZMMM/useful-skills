@@ -4,23 +4,35 @@
 useful-skills/
 ├── .claude/
 │   └── skills/
-│       └── econ-slides-beamer/
-│           ├── SKILL.md                    # Skill documentation and usage guide
-│           └── assets/
-│               ├── BlueU.sty               # BlueU theme style file
-│               ├── GreenU.sty              # GreenU theme style file
-│               ├── MorandiCool.sty         # MorandiCool theme style file
-│               ├── MorandiWarm.sty         # MorandiWarm theme style file
-│               ├── PurpleU.sty             # PurpleU theme style file
-│               ├── Qing.sty                # Qing theme style file
-│               ├── RedU.sty                # RedU theme style file
-│               ├── template-blueu.tex      # BlueU theme template
-│               ├── template-greenu.tex     # GreenU theme template
-│               ├── template-morandicool.tex # MorandiCool theme template
-│               ├── template-morandiwarm.tex # MorandiWarm theme template
-│               ├── template-purpleu.tex    # PurpleU theme template
-│               ├── template-qing.tex       # Qing theme template
-│               └── template-redu.tex       # RedU theme template
+│       ├── do-agent-brainstorm/
+│       │   └── SKILL.md                    # Multi-stage brainstorming workflow
+│       ├── econ-llm-memo-paper/
+│       │   ├── SKILL.md                    # LLM-based paper memo generation
+│       │   ├── references/                 # API configs and documentation
+│       │   └── scripts/                    # Python scripts for memo generation
+│       ├── econ-memo-paper/
+│       │   ├── SKILL.md                    # Direct paper memo writing
+│       │   └── references/                 # Memo format guidelines
+│       ├── econ-pre/
+│       │   └── SKILL.md                    # Complete presentation workflow
+│       ├── econ-pre-agent/
+│       │   └── SKILL.md                    # Agentic presentation workflow
+│       ├── econ-slides-beamer/
+│       │   ├── SKILL.md                    # Beamer slides with 7 themes
+│       │   └── assets/                     # Theme files and templates
+│       ├── econ-top5-referee/
+│       │   ├── SKILL.md                    # Top 5 journal referee reports
+│       │   ├── agents/                     # OpenAI agent config
+│       │   └── references/                 # Journal guidelines
+│       ├── mineru-pdf-crop/
+│       │   ├── SKILL.md                    # PDF figure/table cropping
+│       │   └── scripts/                    # Cropping scripts
+│       ├── mineru-pdf-re/
+│       │   ├── SKILL.md                    # MinerU PDF conversion
+│       │   └── scripts/                    # Conversion scripts
+│       └── paddle-pdf-re/
+│           ├── SKILL.md                    # PaddleOCR-VL PDF conversion
+│           └── scripts/                    # Async OCR scripts
 ├── agent_tasks/
 │   ├── ChangeLog.md                        # Version change log
 │   ├── PathFile.md                         # This file - project structure

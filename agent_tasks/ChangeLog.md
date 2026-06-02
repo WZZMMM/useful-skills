@@ -1,18 +1,28 @@
 # ChangeLog
 
-## [v0.1.0] - 2026-06-02 21:30
+## [v0.0.1] - 2026-06-02 22:00
 
 ### Added
-- Initialized Git repository
-- Created project structure with `.claude/skills/econ-slides-beamer/` directory
-- Added `econ-slides-beamer` skill with 7 theme variants (RedU, Qing, PurpleU, BlueU, GreenU, MorandiCool, MorandiWarm)
-- Created `INDEX.md` and `INDEX_zh.md` for skill documentation
-- Translated `README_zh.md` to `README.md`
-- Created project documentation files in `agent_tasks/`
+- Initialized Git repository with 10 agent skills
+- Created GitHub repository: https://github.com/WZZMMM/useful-skills
+- Pushed all skills to public repository
+
+### Skills Included
+- do-agent-brainstorm: Multi-stage brainstorming workflow
+- econ-llm-memo-paper: LLM-based economics paper memo generation
+- econ-memo-paper: Direct economics paper memo writing
+- econ-pre: Complete economics paper presentation workflow
+- econ-pre-agent: Agentic workflow for presentation materials
+- econ-slides-beamer: Academic Beamer slides with 7 themes
+- econ-top5-referee: Top 5 journal referee reports
+- mineru-pdf-crop: PDF figure/table cropping
+- mineru-pdf-re: MinerU PDF conversion
+- paddle-pdf-re: PaddleOCR-VL PDF conversion
 
 ### Fixed
-- Replaced all personal information in template files with fictional data (方鸿渐, Clayton University)
-- Updated SKILL.md to remove privacy-sensitive content
+- Replaced all personal information in template files with fictional data
+- Moved paddle-pdf-re script to scripts/ subdirectory
+- Removed __pycache__ files from version control
 
 ### Changed
 - N/A
