@@ -1,0 +1,70 @@
+% RedU.sty - Econ Beamer Theme
+% Red university theme for red-toned universities and formal institutional presentations.
+% Generated for econ-latex-beamer-re.
+\mode<presentation>
+
+\newif\ifbeamer@secheader
+\beamer@secheaderfalse
+\ProcessOptionsBeamer
+
+\useoutertheme[footline=authorinstitutetitle]{smoothbars}
+\makeatletter
+\newcommand{\frameofframes}{/}
+\newcommand{\setframeofframes}[1]{\renewcommand{\frameofframes}{#1}}
+\setbeamertemplate{footline}{}
+\makeatother
+
+\useinnertheme{circles}
+
+\xdefinecolor{themeprimary}{rgb}{0.50,0.00,0.00}
+\xdefinecolor{themesecondary}{rgb}{0.40,0.00,0.00}
+\xdefinecolor{themeaccent}{rgb}{0.62,0.06,0.08}
+\xdefinecolor{themecite}{rgb}{0.42,0.32,0.30}
+\xdefinecolor{themesoft}{rgb}{1.00,0.95,0.94}
+\xdefinecolor{deepred}{rgb}{0.62,0.06,0.08}
+\xdefinecolor{deepblue}{rgb}{0.42,0.32,0.30}
+\xdefinecolor{deepgreen}{rgb}{0.0,0.5,0.0}
+\xdefinecolor{halfgray}{gray}{0.55}
+
+\setbeamercolor{footline}{bg=themeprimary}
+\setbeamercolor{frametitle}{bg=themeprimary,fg=white}
+\setbeamercolor{title}{bg=themeprimary,fg=white}
+\setbeamerfont{frametitle}{size=\large}
+\setbeamertemplate{bibliography item}[text]
+\setbeamertemplate{caption}[numbered]
+
+\setbeamercolor{palette primary}{use=structure,fg=white,bg=structure.fg}
+\setbeamercolor{palette secondary}{use=structure,fg=white,bg=themesecondary}
+\setbeamercolor{palette tertiary}{use=structure,fg=white,bg=themesecondary!75!black}
+\setbeamercolor{palette quaternary}{fg=white,bg=themesecondary!55!black}
+\setbeamercolor{titlelike}{parent=palette primary}
+\setbeamercolor{block title}{bg=themesecondary,fg=white}
+\setbeamercolor{block body}{bg=themesoft,fg=black}
+\setbeamercolor*{block title example}{use={normal text,example text},bg=themesoft,fg=themeaccent}
+\setbeamercolor{fine separation line}{}
+\setbeamercolor{item projected}{fg=white}
+\setbeamercolor{palette sidebar primary}{use=normal text,fg=normal text.fg}
+\setbeamercolor{palette sidebar quaternary}{use=structure,fg=structure.fg}
+\setbeamercolor{palette sidebar secondary}{use=structure,fg=structure.fg}
+\setbeamercolor{palette sidebar tertiary}{use=normal text,fg=normal text.fg}
+\setbeamercolor{section in sidebar}{fg=themeaccent}
+\setbeamercolor{section in sidebar shaded}{fg=themecite!55}
+\setbeamercolor{separation line}{}
+\setbeamercolor{sidebar}{bg=themeprimary}
+\setbeamercolor{sidebar}{parent=palette primary}
+\setbeamercolor{structure}{fg=themeprimary}
+\setbeamercolor{subsection in sidebar}{fg=themeaccent}
+\setbeamercolor{subsection in sidebar shaded}{fg=themecite!55}
+
+\AtBeginSection[]{%
+  \begin{frame}
+    \tableofcontents[sectionstyle=show/shaded,subsectionstyle=show/shaded/hide,subsubsectionstyle=show/shaded/hide]
+  \end{frame}
+}
+\AtBeginSubsection[]{%
+  \begin{frame}
+    \tableofcontents[sectionstyle=show/shaded,subsectionstyle=show/shaded/hide,subsubsectionstyle=show/shaded/hide]
+  \end{frame}
+}
+
+\mode<all>

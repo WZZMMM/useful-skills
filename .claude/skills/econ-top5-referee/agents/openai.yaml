@@ -1,0 +1,4 @@
+interface:
+  display_name: "Econ Top 5 Referee"
+  short_description: "Draft Top 5 economics referee packages"
+  default_prompt: "Use $econ-top5-referee to draft journal-specific Top 5 referee reports for this economics paper."

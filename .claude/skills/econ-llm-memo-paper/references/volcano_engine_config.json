@@ -1,0 +1,27 @@
+{
+    "provider": "VolcanoEngine",
+    "api_key_env": "ARK_API_KEY",
+    "base_url": "https://ark.cn-beijing.volces.com/api/v3",
+    "models": {
+        "doubao-seed-2-0-pro": {
+            "model_id": "doubao-seed-2-0-pro-260215",
+            "unique_id": "doubaoseed20pro",
+            "description": "Doubao Seed 2.0 Pro with thinking capability",
+            "supports_reasoning": true
+        },
+        "doubao-seed-2-0-lite": {
+            "model_id": "doubao-seed-2-0-lite-260215",
+            "unique_id": "doubaoseed20lite",
+            "description": "Doubao Seed 2.0 Lite with thinking capability",
+            "supports_reasoning": true
+        },
+        "doubao-seed-2-0-mini": {
+            "model_id": "doubao-seed-2-0-mini-260215",
+            "unique_id": "doubaoseed20mini",
+            "description": "Doubao Seed 2.0 Mini with thinking capability",
+            "supports_reasoning": true
+        }
+    },
+    "default_model": "doubao-seed-2-0-pro",
+    "reasoning_effort_levels": ["minimal", "low", "medium", "high"]
+}

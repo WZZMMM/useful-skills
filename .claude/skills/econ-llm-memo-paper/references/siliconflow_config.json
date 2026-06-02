@@ -1,0 +1,42 @@
+{
+    "base_url": "https://api.siliconflow.cn/v1",
+    "api_key_env": "SILICONFLOW_API_KEY",
+    "models": {
+        "deepseek-v3-2": {
+            "model_id": "Pro/deepseek-ai/DeepSeek-V3.2",
+            "unique_id": "deepseekv32",
+            "supports_thinking": true
+        },
+        "step-3-5-flash": {
+            "model_id": "stepfun-ai/Step-3.5-Flash",
+            "unique_id": "step35flash",
+            "supports_thinking": true
+        },
+        "kimi-k2-5": {
+            "model_id": "Pro/moonshotai/Kimi-K2.5",
+            "unique_id": "kimik25",
+            "supports_thinking": true
+        },
+        "minimax-m2-5": {
+            "model_id": "Pro/MiniMaxAI/MiniMax-M2.5",
+            "unique_id": "minimaxm25",
+            "supports_thinking": true
+        },
+        "glm-5": {
+            "model_id": "Pro/zai-org/GLM-5",
+            "unique_id": "glm5",
+            "supports_thinking": true
+        },
+        "qwen3-5-122b": {
+            "model_id": "Qwen/Qwen3.5-122B-A10B",
+            "unique_id": "qwen35122b",
+            "supports_thinking": true
+        },
+        "qwen3-5-27b": {
+            "model_id": "Qwen/Qwen3.5-27B",
+            "unique_id": "qwen3527b",
+            "supports_thinking": true
+        }
+    },
+    "default_model": "deepseek-v3-2"
+}

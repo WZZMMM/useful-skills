@@ -1,0 +1,52 @@
+{
+    "base_url": "https://api-inference.modelscope.cn/v1",
+    "api_key_env": "MODELSCOPE_API_KEY",
+    "default_model": "deepseek-v3-2",
+    "models": {
+        "deepseek-v3-2": {
+            "model_id": "deepseek-ai/DeepSeek-V3.2",
+            "unique_id": "deepseekv32",
+            "description": "DeepSeek V3.2, default model"
+        },
+        "deepseek-r1": {
+            "model_id": "deepseek-ai/DeepSeek-R1-0528",
+            "unique_id": "deepseekr1",
+            "description": "DeepSeek R1 reasoning model"
+        },
+        "qwen3.5-397b": {
+            "model_id": "Qwen/Qwen3.5-397B-A17B",
+            "unique_id": "qwen35397ba17b",
+            "description": "Qwen 3.5 397B MoE model"
+        },
+        "qwen3.5-122b": {
+            "model_id": "Qwen/Qwen3.5-122B-A10B",
+            "unique_id": "qwen35122ba10b",
+            "description": "Qwen 3.5 122B MoE model"
+        },
+        "qwen3.5-35b": {
+            "model_id": "Qwen/Qwen3.5-35B-A3B",
+            "unique_id": "qwen3535ba3b",
+            "description": "Qwen 3.5 35B MoE model"
+        },
+        "qwen3.5-27b": {
+            "model_id": "Qwen/Qwen3.5-27B",
+            "unique_id": "qwen3527b",
+            "description": "Qwen 3.5 27B dense model"
+        },
+        "kimi-k2.5": {
+            "model_id": "moonshotai/Kimi-K2.5",
+            "unique_id": "kimik25",
+            "description": "Moonshot Kimi K2.5"
+        },
+        "glm-5": {
+            "model_id": "ZhipuAI/GLM-5",
+            "unique_id": "glm5",
+            "description": "ZhipuAI GLM-5"
+        },
+        "mimo-v2": {
+            "model_id": "XiaomiMiMo/MiMo-V2-Flash",
+            "unique_id": "mimov2flash",
+            "description": "Xiaomi MiMo V2 Flash"
+        }
+    }
+}

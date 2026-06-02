@@ -1,0 +1,84 @@
+% ============================================================
+% Compile by XeLaTeX
+% Econ Pre Beamer - Template (MorandiCool)
+% Requires: MorandiCool.sty in the same directory.
+% ============================================================
+\documentclass[fontset=none,aspectratio=169]{ctexbeamer}
+\usepackage{ctex}
+\usepackage{latexsym,amsmath,xcolor,multicol,booktabs,calligra}
+\usepackage{amssymb,amsthm,amsbsy,amsfonts}
+\usepackage{graphicx,listings,stackengine,float,verbatim,caption,subcaption,xeCJK}
+\usepackage{fontspec}
+\usepackage{hyperref}
+\hypersetup{hypertex=true,linkcolor=themeaccent,urlcolor=themecite}
+\usepackage{MorandiCool}
+
+\setmainfont{Times New Roman}
+\setCJKmainfont[AutoFakeBold={2}]{KaiTi}
+\newCJKfontfamily{\HeiTi}[AutoFakeBold={3.17}]{SimHei}
+\newCJKfontfamily{\FangSong}[AutoFakeBold={3.17}]{STFangsong}
+\newCJKfontfamily{\huawenxingkai}[AutoFakeBold={2.17}]{STXingkai}
+\newCJKfontfamily{\yasong}[AutoFakeBold,AutoFakeSlant]{FZYaSong-DB-GBK}
+\newCJKfontfamily{\yankai}[AutoFakeBold={2.17},AutoFakeSlant]{Slideqiuhong Regular}
+\setCJKmonofont{FangSong}
+\newfontfamily\chalkd{Times New Roman}[AutoFakeBold={2.17}]
+\setbeamerfont{normal text}{family=\chalkd,series=\mdseries}
+\setbeamerfont{alerted text}{family=\chalkd,series=\mdseries}
+\setbeamerfont{frametitle}{family=\chalkd,series=\mdseries}
+\AtBeginDocument{\usebeamerfont{normal text}}
+\usefonttheme[onlymath]{serif}
+
+\setbeamertemplate{blocks}[rounded][shadow=true]
+\newcommand{\term}[1]{\textcolor{themeaccent}{\textbf{#1}}}
+\newcommand{\scrpt}[1]{\textcolor{themecite}{\scriptsize #1}}
+
+\author{Caunedo and Kala \\ (\textit{Working Paper}, 2022)}
+\title{\textbf{Mechanizing Agriculture}}
+\subtitle{}
+\institute{汇报人：{ \yankai 方鸿渐}}
+\date{\today}
+
+\begin{document}
+\begin{frame}\titlepage\end{frame}
+\section{Overview}
+\begin{frame}{Authors}
+\begin{itemize}
+\item \textbf{Julieta Caunedo} - Economist, Cornell University. | Macroeconomics and development.
+\item \textbf{Namrata Kala} - Economist, MIT Sloan. | Environmental, development, and organizational economics.
+\end{itemize}
+\end{frame}
+\begin{frame}{Overview}
+\begin{itemize}
+\item \textbf{Research question}: What are the gains from mechanization for smallholder agriculture?
+\item \textbf{Context}: A randomized subsidy to equipment rental through custom hiring centers in Karnataka, India.
+\item \textbf{Key finding}: Mechanization relaxes \term{supervision frictions} and raises model-implied welfare.
+\end{itemize}
+\end{frame}
+
+% ---------- [plain] Figure ----------
+\begin{frame}[plain]
+\centering
+\includegraphics[width=0.88\paperwidth,height=0.86\paperheight,keepaspectratio]{fig/fig1.pdf}
+\end{frame}
+
+% ============================================================
+% FIN
+% ============================================================
+\begin{frame}[plain]
+    \begin{center}
+\vspace{3em}
+{\LARGE \color{themeaccent}\textbf{Thank You for Your Attention!}}
+
+\vspace{3em}
+
+{\color{halfgray}
+{\yankai 方鸿渐}
+\footnotesize
+\quad 克莱登大学\ 哲学博士 \quad | \quad
+Clayton University\ PhD \\
+微信：fanghongjian1898 \quad 邮箱：\texttt{fanghongjian1898@clayton.edu}
+}
+    \end{center}
+\end{frame}
+
+\end{document}
