@@ -61,7 +61,7 @@ python "{skill_scripts}/memo_papers.py" \
   [--wait N]
 ```
 
-**Run from project root:** `e:\北大经济学学习\杂\JournalIssues`
+**Run from project root:** `E:\your_project_root\JournalIssues`
 
 Or run worker directly for a single paper:
 ```bash

@@ -13,3 +13,6 @@
 - Both provide high-precision PDF-to-Markdown conversion capabilities
 - These skills encapsulate their API usage workflows for easy invocation in Claude Code
 
+## License
+
+This project is licensed under the [MIT License](LICENSE.md).

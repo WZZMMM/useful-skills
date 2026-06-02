@@ -227,10 +227,10 @@ PowerShell 7+ 完全支持中文路径。使用建议：
 
 ```powershell
 # 方式1：用引号包裹（推荐）
-python volcano_engine_llm.py JDE 202603 Memo doubao-seed-2-0-lite "E:\北大经济学学习\杂\output"
+python volcano_engine_llm.py JDE 202603 Memo doubao-seed-2-0-lite "E:\your_project_root\output"
 
 # 方式2：使用正斜杠（Windows 也支持）
-python volcano_engine_llm.py JDE 202603 Memo doubao-seed-2-0-lite "E:/北大经济学学习/杂/output"
+python volcano_engine_llm.py JDE 202603 Memo doubao-seed-2-0-lite "E:/your_project_root/output"
 
 # 方式3：使用相对路径
 python volcano_engine_llm.py JDE 202603 Memo doubao-seed-2-0-lite "..\..\CustomOutput"

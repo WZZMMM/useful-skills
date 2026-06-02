@@ -10,3 +10,7 @@
 ## `mineru-pdf-re` 和 `paddle-pdf-re`
 
 - [MinerU](https://mineru.net/)和[PaddleOCR](https://aistudio.baidu.com/paddleocr)是当前最强大的两款OCR工具
+
+## 许可
+
+本项目采用 [MIT License](LICENSE.md) 许可证。
