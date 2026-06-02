@@ -1,0 +1,14 @@
+# Project instructions - do not push
+CLAUDE.md
+AGENTS.md
+
+# Project logs - do not push
+agent_tasks/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# OS files
+.DS_Store
+Thumbs.db
