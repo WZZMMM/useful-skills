@@ -72,7 +72,9 @@
     ├── template-morandiwarm.tex # MorandiWarm 主题模板
     ├── template-purpleu.tex    # PurpleU 主题模板
     ├── template-qing.tex       # Qing 主题模板
-    └── template-redu.tex       # RedU 主题模板
+    ├── template-redu.tex       # RedU 主题模板
+    └── fig/
+        └── fig1.pdf            # 示例 treatment-control 图
 ```
 
 ## econ-top5-referee

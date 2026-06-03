@@ -72,7 +72,9 @@
     ├── template-morandiwarm.tex # MorandiWarm theme template
     ├── template-purpleu.tex    # PurpleU theme template
     ├── template-qing.tex       # Qing theme template
-    └── template-redu.tex       # RedU theme template
+    ├── template-redu.tex       # RedU theme template
+    └── fig/
+        └── fig1.pdf            # Sample treatment-control figure
 ```
 
 ## econ-top5-referee
