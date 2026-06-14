@@ -75,7 +75,7 @@ For multiple papers, create one memo file per paper unless the user requests a c
 
 ## Presentation-Preparation Notes
 
-When called from `econ-pre-agent`, preserve the required memo sections and also emphasize material useful for slides:
+When called from `econ-pre`, preserve the required memo sections and also emphasize material useful for slides:
 
 - divide content into 3-4 presentation sections matching the paper structure
 - list figures/tables by semantic mention order, not numeric order alone

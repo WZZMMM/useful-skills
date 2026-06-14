@@ -41,12 +41,7 @@
 
 ## econ-pre
 
-- description: Complete workflow for producing academic economics paper presentations: read paper, generate memo, research authors, create LaTeX beamer slides, write Chinese speaker notes, and iterate on revisions.
-- author: WZM
-
-## econ-pre-agent
-
-- description: Agentic workflow for preparing economics paper presentation materials, including paper reading, memo routing, author research, LaTeX beamer slides, Chinese speaker notes as DOCX via the docx skill, optional extensions, and optional referee reports.
+- description: Complete agentic workflow for preparing economics paper presentation materials: paper reading, memo routing, author research, LaTeX beamer slides via econ-slides-beamer, Chinese speaker notes as DOCX via the docx skill, optional extensions, and optional referee reports via econ-top5-referee.
 - author: WZM
 
 ## econ-slides-beamer

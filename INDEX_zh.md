@@ -41,12 +41,7 @@
 
 ## econ-pre
 
-- description: 制作学术经济学论文演示的完整工作流：阅读论文、生成备忘录、研究作者、创建 LaTeX Beamer 幻灯片、编写中文演讲备注、迭代修订。
-- author: WZM
-
-## econ-pre-agent
-
-- description: 准备经济学论文演示材料的智能体工作流，包括论文阅读、备忘录路由、作者研究、LaTeX Beamer 幻灯片、通过 docx 技能生成中文演讲备注 DOCX、可选扩展和审稿报告。
+- description: 完整的智能体工作流，用于准备经济学论文演示材料：论文阅读、备忘录路由、作者研究、通过 econ-slides-beamer 生成 LaTeX Beamer 幻灯片、通过 docx 技能生成中文演讲备注 DOCX、可选扩展和通过 econ-top5-referee 生成审稿报告。
 - author: WZM
 
 ## econ-slides-beamer

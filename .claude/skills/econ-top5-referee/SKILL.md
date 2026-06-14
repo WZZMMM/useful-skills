@@ -51,7 +51,7 @@ If a referee subagent needs information from a forbidden file, the main/orchestr
 
 ## Temporary Workspace and Process Documents
 
-Process documents must be saved under a project-local temporary workspace in `/agent_tasks/`, following the `do-agent` and `econ-pre-agent` convention.
+Process documents must be saved under a project-local temporary workspace in `/agent_tasks/`, following the `do-agent` and `econ-pre` convention.
 
 If this skill runs standalone:
 
@@ -60,7 +60,7 @@ If this skill runs standalone:
 3. If that folder already exists, create a non-overwriting variant.
 4. Save the review matrix and all process documents in this workspace.
 
-If this skill is nested inside a larger multi-step/multi-agent workflow, such as `do-agent` or `econ-pre-agent`, reuse the already-created temporary workspace passed by the parent workflow. Do not create a second top-level `agent_tasks/` directory unless no parent workspace exists.
+If this skill is nested inside a larger multi-step/multi-agent workflow, such as `do-agent` or `econ-pre`, reuse the already-created temporary workspace passed by the parent workflow. Do not create a second top-level `agent_tasks/` directory unless no parent workspace exists.
 
 Use these process-document paths inside the temporary workspace:
 
@@ -119,7 +119,7 @@ Defaults:
 
 ## Editor-Led Workflow
 
-This skill can run as a standalone multi-subagent editorial workflow or as a nested component inside `econ-pre-agent`.
+This skill can run as a standalone multi-subagent editorial workflow or as a nested component inside `econ-pre`.
 
 Use an editor subagent whenever the user requests an editorial decision, overall evaluation, deliberation, multiple reports, multiple journals, or an integrated review package. The editor subagent is not a referee; it manages assignments, audits report quality, and writes the final synthesis.
 
