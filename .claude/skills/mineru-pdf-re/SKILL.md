@@ -1,12 +1,24 @@
 ---
 name: mineru-pdf-re
-description: MinerU PDF conversion workflow using official API docs. Use when asked to call MinerU to convert PDFs. Defaults to Precision Extract (token, full zip with Markdown/JSON/images/layout). Agent Lightweight (no token, Markdown only) is available for simple text extraction. Requires generated project scripts to keep the same names as this skill package scripts.
+description: MinerU PDF conversion workflow using official API docs. Supports single-file and batch processing (up to 50 files per API call, auto-chunking for larger directories). Use when explicitly asked to call MinerU to convert PDFs, or when PaddleOCR is not suitable and MinerU is chosen deliberately. Defaults to Precision Extract (token, full zip with Markdown/JSON/images/layout). Agent Lightweight (no token, Markdown only) is available for simple text extraction. Requires generated project scripts to keep the same names as this skill package scripts.
 author: WZM
 ---
 
-# MinerU PDF Conversion
+# MinerU PDF Re
 
 Use this skill when the user asks to convert PDF files with MinerU.
+
+## Routing Rule
+
+For general PDF-to-Markdown conversion or PDF layout extraction, prefer `paddle-pdf-re` by default.
+
+Use this skill when:
+
+- The user explicitly says MinerU or `mineru-pdf-re`.
+- Existing project artifacts or prior workflow requirements already depend on MinerU output.
+- PaddleOCR is unavailable, unsuitable, or explicitly rejected and MinerU is the chosen fallback.
+
+If the user explicitly names a converter, always use the named converter.
 
 ## Mode Selection
 
@@ -106,6 +118,61 @@ Retry/resume:
 
 - If upload succeeds but polling/download fails, keep the `batch_id` from logs and resume with `--batch-id` instead of uploading again.
 
+## Batch Processing (Precision Extract)
+
+The Precision Extract script supports batch processing for directories of PDFs using the MinerU v4 native batch API (`/api/v4/file-urls/batch`).
+
+How it works:
+
+1. Collects PDF files from the input directory, applies `--start` / `--limit` for resumable subsets.
+2. Chunks files into groups of up to 50 (API limit per request).
+3. For each chunk:
+   - Requests upload URLs in one API call (returns `batch_id` + `file_urls[]`).
+   - Uploads files concurrently (4 workers).
+   - Polls `GET /api/v4/extract-results/batch/{batch_id}` until all files reach a terminal state (`done` or `failed`), with per-file progress logging (page counts).
+   - Downloads each completed file's ZIP, extracts, and runs post-processing independently.
+4. Prints a success/failure summary at the end.
+
+Usage:
+
+```bash
+# Single file (unchanged)
+python Output\scripts\run_mineru_precision.py --input paper.pdf
+
+# Batch: all PDFs in a directory
+python Output\scripts\run_mineru_precision.py --input ./pdfs/
+
+# Batch: skip first 10, process next 20
+python Output\scripts\run_mineru_precision.py --input ./pdfs/ --start 10 --limit 20
+
+# Resume a failed single-file upload
+python Output\scripts\run_mineru_precision.py --input paper.pdf --batch-id <batch_id>
+```
+
+Supported parameters (complete):
+
+| Parameter | Meaning | Default |
+|---|---|---|
+| `--input`, `-i` | PDF file or directory | required |
+| `--output-dir`, `-o` | Output directory | `Output/ocr/mineru` |
+| `--batch-id` | Resume from existing batch_id (single-file only) | None |
+| `--model-version` | `pipeline` / `vlm` / `MinerU-HTML` | `vlm` |
+| `--language` | Document language | `ch` |
+| `--is-ocr` | Enable OCR | false |
+| `--enable-formula` | Enable formula recognition | true |
+| `--enable-table` | Enable table recognition | true |
+| `--timeout` | Max seconds to wait per batch | 900 |
+| `--poll-interval` | Seconds between status checks | 5 |
+| `--start` | Skip first N files in batch mode | 0 |
+| `--limit` | Max files to process (0=all) | 0 |
+| `--log` | Custom log file path | auto-timestamped |
+
+Limitations:
+
+- Single API call supports up to 50 files. The script auto-chunks larger directories.
+- Each file is limited to 200 MB and 200 pages.
+- Failed files in a batch do not block other files; they are reported in the summary.
+
 ## Agent Lightweight Rules
 
 Use `scripts/run_mineru_agent_light.py`.
@@ -134,13 +201,19 @@ Limits:
 
 ## Validation
 
-After Precision Extract:
+After Precision Extract (single file):
 
 1. Confirm `{stem}_mineru/` exists and is nonempty.
 2. Confirm `full.md`, at least one JSON file, and `images/` (when images are present) are inside the subfolder.
 3. Confirm no timestamped `_output_*` folders remain in the output directory.
 4. Confirm no `.pdf` files remain inside `{stem}_mineru/`.
 5. Confirm `{stem}_mineru.md` exists in the output directory (parent level) with image references pointing to `{stem}_mineru/images/...`.
+
+After Precision Extract (batch):
+
+1. Confirm the log shows "Batch complete: N succeeded, M failed".
+2. For each succeeded file, confirm the same items 1–5 as single-file mode.
+3. If any files failed, check the log for per-file error messages (e.g. `err_msg` from the API).
 
 After Agent Lightweight:
 

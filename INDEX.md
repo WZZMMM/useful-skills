@@ -5,6 +5,23 @@
 - description: Use this skill when the user asks to '/do-agent-brainstorm'. Combines do-agent's output control with multi-agent-brainstorming's structured review process. Runs a multi-stage brainstorming workflow with full file-based tracking: plans, role reviews, decision logs, and final deliverables all saved to a temporary working directory.
 - author: WZM
 
+## crossref-openalex
+
+- description: Comprehensive use of CrossRef and OpenAlex to convert a paper's reference list into uniquely-identified .md, .json, and .ris files. Enriches OCR-extracted references with DOI, ISBN, URL identifiers via CrossRef and OpenAlex APIs.
+- author: WZM
+- structure:
+
+```
+.claude/skills/crossref-openalex/
+├── SKILL.md                    # Skill documentation
+├── assets/                     # (reserved)
+├── references/
+│   └── api_reference.md        # CrossRef and OpenAlex API reference
+└── scripts/
+    ├── generate_v31.py         # Main deliverable generator (MD/JSON/RIS)
+    └── search_unmatched.py     # OpenAlex search for unmatched references
+```
+
 ## econ-llm-memo-paper
 
 - description: Generate structured economics paper memos using external LLM APIs (Ark/Doubao, Bailian, ModelScope, SiliconFlow, Volcano Engine). Supports batch processing and multiple output formats.
@@ -99,6 +116,7 @@
 .claude/skills/mineru-pdf-crop/
 ├── SKILL.md                    # Skill documentation
 └── scripts/
+    ├── extract_and_crop_mineru.py # MinerU layout-based PDF cropping script
     └── mineru_pdf_crop.py      # PDF cropping script
 ```
 
@@ -111,9 +129,24 @@
 ```
 .claude/skills/mineru-pdf-re/
 ├── SKILL.md                    # Skill documentation
+├── references/
+│   └── MinerU-API-Doc.md       # MinerU cloud parsing API documentation
 └── scripts/
     ├── run_mineru_agent_light.py # Lightweight conversion script
     └── run_mineru_precision.py   # Precision extraction script
+```
+
+## paddle-pdf-crop
+
+- description: Crop or extract figures, charts, and tables from PDF documents as standalone PDF files using PaddleOCR layout recognition results. Depends on paddle-pdf-re for layout extraction.
+- author: WZM
+- structure:
+
+```
+.claude/skills/paddle-pdf-crop/
+├── SKILL.md                    # Skill documentation
+└── scripts/
+    └── extract_and_crop_paddle.py # PaddleOCR layout-based PDF cropping script
 ```
 
 ## paddle-pdf-re
@@ -125,6 +158,9 @@
 ```
 .claude/skills/paddle-pdf-re/
 ├── SKILL.md                    # Skill documentation
+├── references/
+│   ├── PaddleOCR-VL-1.5_API-Doc.md # PaddleOCR-VL-1.5 API documentation
+│   └── PaddleOCR-VL-1.6_API-Doc.md # PaddleOCR-VL-1.6 API documentation
 └── scripts/
     └── run_paddle_ocr_async.py # Async OCR conversion script
 ```

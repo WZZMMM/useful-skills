@@ -5,6 +5,23 @@
 - description: 当用户请求 '/do-agent-brainstorm' 时使用此技能。结合 do-agent 的输出控制和 multi-agent-brainstorming 的结构化审查流程。运行多阶段头脑风暴工作流，包含完整的文件跟踪：计划、角色审查、决策日志和最终交付物。
 - author: WZM
 
+## crossref-openalex
+
+- description: 综合利用 CrossRef 和 OpenAlex 将论文参考文献列表转换为带唯一标识符的 .md、.json 和 .ris 文件。通过 CrossRef 和 OpenAlex API 为 OCR 提取的参考文献添加 DOI、ISBN、URL 标识符。
+- author: WZM
+- structure:
+
+```
+.claude/skills/crossref-openalex/
+├── SKILL.md                    # 技能文档
+├── assets/                     # （保留）
+├── references/
+│   └── api_reference.md        # CrossRef 和 OpenAlex API 参考
+└── scripts/
+    ├── generate_v31.py         # 主交付物生成器（MD/JSON/RIS）
+    └── search_unmatched.py     # OpenAlex 搜索未匹配参考文献
+```
+
 ## econ-llm-memo-paper
 
 - description: 使用外部 LLM API（Ark/豆包、百炼、ModelScope、SiliconFlow、火山引擎）生成结构化经济学论文备忘录。支持批量处理和多种输出格式。
@@ -99,6 +116,7 @@
 .claude/skills/mineru-pdf-crop/
 ├── SKILL.md                    # 技能文档
 └── scripts/
+    ├── extract_and_crop_mineru.py # 基于 MinerU 布局的 PDF 裁剪脚本
     └── mineru_pdf_crop.py      # PDF 裁剪脚本
 ```
 
@@ -111,9 +129,24 @@
 ```
 .claude/skills/mineru-pdf-re/
 ├── SKILL.md                    # 技能文档
+├── references/
+│   └── MinerU-API-Doc.md       # MinerU 云端解析 API 文档
 └── scripts/
     ├── run_mineru_agent_light.py # 轻量级转换脚本
     └── run_mineru_precision.py   # 精确提取脚本
+```
+
+## paddle-pdf-crop
+
+- description: 使用 PaddleOCR 布局识别结果，从 PDF 文档中裁剪或提取图表、图片和表格为独立 PDF 文件。依赖 paddle-pdf-re 进行布局提取。
+- author: WZM
+- structure:
+
+```
+.claude/skills/paddle-pdf-crop/
+├── SKILL.md                    # 技能文档
+└── scripts/
+    └── extract_and_crop_paddle.py # 基于 PaddleOCR 布局的 PDF 裁剪脚本
 ```
 
 ## paddle-pdf-re
@@ -125,6 +158,9 @@
 ```
 .claude/skills/paddle-pdf-re/
 ├── SKILL.md                    # 技能文档
+├── references/
+│   ├── PaddleOCR-VL-1.5_API-Doc.md # PaddleOCR-VL-1.5 API 文档
+│   └── PaddleOCR-VL-1.6_API-Doc.md # PaddleOCR-VL-1.6 API 文档
 └── scripts/
     └── run_paddle_ocr_async.py # 异步 OCR 转换脚本
 ```
