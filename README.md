@@ -73,7 +73,7 @@ Here I only briefly introduce the basic development and usage approach, and alon
 
 #### Reference Sources
 
-- The `/do-agent` skill provided by Professor Li Xueheng
+- The `/do-agent` skill provided by Professor Xueheng LI
 
 ### Building a Personal Knowledge Base: `/econ-lib`
 
