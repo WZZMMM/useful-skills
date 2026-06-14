@@ -1,0 +1,3 @@
+display_name: Econ Reference Rebuilder
+short_description: Extract OCR paper references and export enriched bibliography files.
+default_prompt: Extract references from an OCR markdown paper, resolve identifiers through CrossRef/OpenAlex, and export MD, JSON, and RIS deliverables.

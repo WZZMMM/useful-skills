@@ -7,19 +7,17 @@
 
 ## crossref-openalex
 
-- description: 综合利用 CrossRef 和 OpenAlex 将论文参考文献列表转换为带唯一标识符的 .md、.json 和 .ris 文件。通过 CrossRef 和 OpenAlex API 为 OCR 提取的参考文献添加 DOI、ISBN、URL 标识符。
+- description: 使用 CrossRef 和 OpenAlex 将参考文献解析为持久标识符。作为基础设施级 DOI、ISBN、URL 和 OpenAlex Work ID 查询技能，可处理原始参考文献字符串、已解析 JSON、论文标题、书目条目，或供其他技能在参考文献 enrichment 环节调用。
 - author: WZM
 - structure:
 
 ```
 .claude/skills/crossref-openalex/
-├── SKILL.md                    # 技能文档
-├── assets/                     # （保留）
+├── SKILL.md                    # 通用标识符解析技能文档
 ├── references/
-│   └── api_reference.md        # CrossRef 和 OpenAlex API 参考
+│   └── api_reference.md        # CrossRef/OpenAlex 端点、评分和失败模式说明
 └── scripts/
-    ├── generate_v31.py         # 主交付物生成器（MD/JSON/RIS）
-    └── search_unmatched.py     # OpenAlex 搜索未匹配参考文献
+    └── resolve_refs.py         # 通用“参考文献到标识符”解析器
 ```
 
 ## econ-llm-memo-paper
@@ -54,6 +52,23 @@
 ├── SKILL.md                    # 技能文档
 └── references/
     └── memo_format.md          # 备忘录格式指南
+```
+
+## econ-ref-re
+
+- description: 从 OCR markdown 中重建经济学论文参考文献列表，并导出清洗和 enrichment 后的书目交付文件。抽取 References 部分、修复跨页断裂参考文献、调用 crossref-openalex 解析标识符，并导出用于后续文献综述、备忘录、引用或书目任务的 .md、.json 和 .ris 文件。
+- author: WZM
+- structure:
+
+```
+.claude/skills/econ-ref-re/
+├── SKILL.md                    # OCR 参考文献重建工作流文档
+├── agents/
+│   └── openai.yaml             # OpenAI 智能体元数据
+├── references/
+│   └── pipeline.md             # 解析、enrichment 和审查指南
+└── scripts/
+    └── rebuild_refs.py         # OCR markdown References -> MD/JSON/RIS 流水线
 ```
 
 ## econ-pre

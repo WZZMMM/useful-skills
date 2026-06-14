@@ -7,19 +7,17 @@
 
 ## crossref-openalex
 
-- description: Comprehensive use of CrossRef and OpenAlex to convert a paper's reference list into uniquely-identified .md, .json, and .ris files. Enriches OCR-extracted references with DOI, ISBN, URL identifiers via CrossRef and OpenAlex APIs.
+- description: Resolve bibliographic references to persistent identifiers using CrossRef and OpenAlex. Infrastructure-level DOI, ISBN, URL, and OpenAlex Work ID lookup for raw reference strings, parsed reference JSON, paper titles, bibliography entries, or other skills' reference-enrichment steps.
 - author: WZM
 - structure:
 
 ```
 .claude/skills/crossref-openalex/
-├── SKILL.md                    # Skill documentation
-├── assets/                     # (reserved)
+├── SKILL.md                    # Generic identifier resolver documentation
 ├── references/
-│   └── api_reference.md        # CrossRef and OpenAlex API reference
+│   └── api_reference.md        # CrossRef/OpenAlex endpoint, scoring, and failure-mode notes
 └── scripts/
-    ├── generate_v31.py         # Main deliverable generator (MD/JSON/RIS)
-    └── search_unmatched.py     # OpenAlex search for unmatched references
+    └── resolve_refs.py         # Generic reference-to-identifier resolver
 ```
 
 ## econ-llm-memo-paper
@@ -54,6 +52,23 @@
 ├── SKILL.md                    # Skill documentation
 └── references/
     └── memo_format.md          # Memo format guidelines
+```
+
+## econ-ref-re
+
+- description: Reconstruct economics paper reference lists from OCR markdown and export cleaned/enriched bibliography deliverables. Extracts the References section, repairs split-reference artifacts, resolves identifiers through crossref-openalex, and exports .md, .json, and .ris files for downstream literature-review, memo, citation, or bibliography tasks.
+- author: WZM
+- structure:
+
+```
+.claude/skills/econ-ref-re/
+├── SKILL.md                    # OCR reference reconstruction workflow documentation
+├── agents/
+│   └── openai.yaml             # OpenAI agent metadata
+├── references/
+│   └── pipeline.md             # Parsing, enrichment, and review guidance
+└── scripts/
+    └── rebuild_refs.py         # OCR markdown References -> MD/JSON/RIS pipeline
 ```
 
 ## econ-pre
