@@ -179,3 +179,25 @@
 └── scripts/
     └── run_paddle_ocr_async.py # Async OCR conversion script
 ```
+
+## geo-name-cn
+
+- description: Query, batch-download, validate, and preserve data from China's National Database for Geographical Names public API, including administrative-division trees, place-name searches, category-filtered township/village retrieval, ID-based details, statistics, historical snapshot probes, pagination, checkpointing, and provenance.
+- author: WZM
+- structure:
+
+```
+.claude/skills/geo-name-cn/
+├── SKILL.md                    # Skill documentation
+├── README.md                   # Chinese usage guide and prompt examples
+├── requirements.txt            # Python dependencies (requests)
+├── agents/
+│   └── openai.yaml             # OpenAI agent metadata
+├── references/
+│   ├── api-reference.md        # API endpoints, parameters, and observed behavior
+│   ├── sources.md              # Official and community source citations
+│   └── year-semantics.md       # Year-parameter semantics and snapshot analysis
+└── scripts/
+    ├── geo_name_cn.py          # Client, batch helpers, and CLI
+    └── test_geo_name_cn.py     # Offline unit tests
+```

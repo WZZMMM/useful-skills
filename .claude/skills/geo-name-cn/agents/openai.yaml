@@ -1,0 +1,4 @@
+interface:
+  display_name: "中国国家地名信息库"
+  short_description: "查询、批量获取并核验中国官方行政区划、地名与详情数据"
+  default_prompt: "Use $geo-name-cn to query, batch-download, and validate official Chinese administrative-division and place-name data."

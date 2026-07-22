@@ -179,3 +179,25 @@
 └── scripts/
     └── run_paddle_ocr_async.py # 异步 OCR 转换脚本
 ```
+
+## geo-name-cn
+
+- description: 查询、批量下载、核验中国"国家地名信息库"公开接口数据，支持行政区划树、地名搜索、按类别分页获取乡镇/村社、基于 ID 的详情、同名/同音统计、历史快照探测、分页、断点续传和溯源。
+- author: WZM
+- structure:
+
+```
+.claude/skills/geo-name-cn/
+├── SKILL.md                    # 技能文档
+├── README.md                   # 中文使用指南和 prompt 示例
+├── requirements.txt            # Python 依赖 (requests)
+├── agents/
+│   └── openai.yaml             # OpenAI 智能体元数据
+├── references/
+│   ├── api-reference.md        # API 端点、参数与实测行为
+│   ├── sources.md              # 官方与社区来源引用
+│   └── year-semantics.md       # year 参数语义与快照分析
+└── scripts/
+    ├── geo_name_cn.py          # 客户端、批处理工具与 CLI
+    └── test_geo_name_cn.py     # 离线单元测试
+```
