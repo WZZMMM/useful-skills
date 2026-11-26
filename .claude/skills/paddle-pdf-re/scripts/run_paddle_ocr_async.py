@@ -9,7 +9,7 @@ into chunks, submitted separately, and merged back into a single output.
 
 For each PDF, outputs:
   - {stem}_paddle.md          (merged markdown, images referenced via relative paths)
-  - {stem}_paddle/jsonl.jsonl (raw PaddleOCR JSONL result)
+  - {stem}_paddle/jsonl.jsonl (retained on request with --keep-raw)
   - {stem}_paddle/img/        (downloaded images)
 
 Usage:
@@ -30,8 +30,15 @@ import shutil
 import argparse
 import requests
 from pathlib import Path
+from tempfile import NamedTemporaryFile
+from urllib.parse import quote
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pypdf import PdfReader, PdfWriter
+
+from paddle_artifacts import (
+    annotate_appendices, download_raw_results, iter_pages, render_page, source_page_labels,
+    validate_markdown,
+)
 
 # Windows UTF-8 support
 if sys.platform == "win32":
@@ -58,6 +65,8 @@ def build_optional_payload(args) -> dict:
         "useDocOrientationClassify": args.orientation,
         "useDocUnwarping": args.unwarping,
         "useChartRecognition": args.chart_recognition,
+        "markdownIgnoreLabels": ["number", "footnote", "header", "header_image",
+                                 "footer", "footer_image", "aside_text"],
     }
     # Only include non-None advanced params so API defaults apply
     if args.layout_detection is not None:
@@ -180,109 +189,67 @@ def poll_job(job_id: str, api_key: str) -> dict:
         time.sleep(POLL_INTERVAL)
 
 
-def download_and_merge(jsonl_urls: list, output_dir: Path, stem: str) -> str:
-    """Download JSONL results from one or more chunks, merge into final artifacts.
-
-    Args:
-        jsonl_urls: List of JSONL download URLs, one per chunk (in page order).
-        output_dir: Top-level output directory.
-        stem: Original PDF filename stem.
-
-    Output structure:
-        {stem}_paddle.md           - merged markdown
-        {stem}_paddle/jsonl.jsonl  - raw PaddleOCR JSONL (all chunks concatenated)
-        {stem}_paddle/img/         - downloaded images
-
-    MD image references use relative paths: {stem}_paddle/img/{filename}
-    """
-    # Create subfolder structure
+def download_and_merge(jsonl_urls: list, output_dir: Path, stem: str, *,
+                       expected_pages=None, keep_raw=False, pdf_page_labels=None) -> str:
+    """Render and verify Markdown and images before disposing of the raw result."""
     subfolder = output_dir / f"{stem}_paddle"
     img_dir = subfolder / "img"
     img_dir.mkdir(parents=True, exist_ok=True)
+    raw_path = subfolder / "jsonl.jsonl"
+    download_raw_results(jsonl_urls, raw_path, requests.get)
+    parts = []
+    used_names = set()
+    for ordinal, page in enumerate(iter_pages(raw_path), 1):
+        text = render_page(page, ordinal)
+        images = (page.get("markdown") or {}).get("images") or {}
+        for rel_path, remote_url in images.items():
+            basename = Path(rel_path).name.replace("_", "-")
+            filename = basename
+            index = 1
+            while filename.casefold() in used_names:
+                index += 1
+                filename = f"{Path(basename).stem}-{index}{Path(basename).suffix}"
+            used_names.add(filename.casefold())
+            path = img_dir / filename
+            if not path.is_file() or not path.stat().st_size:
+                response = requests.get(remote_url)
+                response.raise_for_status()
+                if not response.content:
+                    raise ValueError(f"Empty OCR image: {rel_path}")
+                path.write_bytes(response.content)
+            local_url = quote(path.relative_to(output_dir).as_posix(), safe="/")
+            text = text.replace(rel_path, local_url)
+        parts.append(text)
 
-    all_jsonl_lines = []
-    md_parts = []
-    all_images = {}  # relative_path -> remote_url
-    used_local_names = set()  # track filenames to avoid collisions
-
-    for chunk_idx, jsonl_url in enumerate(jsonl_urls):
-        resp = requests.get(jsonl_url)
-        resp.raise_for_status()
-
-        raw_text = resp.text
-        all_jsonl_lines.append(raw_text)
-
-        for line in raw_text.strip().split('\n'):
-            line = line.strip()
-            if not line:
-                continue
-            result = json.loads(line)["result"]
-            for page_result in result.get("layoutParsingResults", []):
-                md_data = page_result.get("markdown", {})
-                text = md_data.get("text", "")
-                if text:
-                    md_parts.append(text)
-                for rel_path, remote_url in md_data.get("images", {}).items():
-                    # If the same rel_path appears in multiple chunks, later
-                    # chunks overwrite earlier ones (shouldn't happen for split PDFs).
-                    all_images[rel_path] = remote_url
-
-    # Save concatenated raw JSONL
-    jsonl_path = subfolder / "jsonl.jsonl"
-    with open(jsonl_path, "w", encoding="utf-8") as f:
-        f.write("\n".join(all_jsonl_lines) + "\n")
-
-    # Merge markdown text
-    merged_md = "\n\n".join(md_parts)
-
-    # Download images and rewrite references
-    for rel_path, remote_url in all_images.items():
-        orig_name = Path(rel_path).name
-        # Replace underscores with hyphens
-        local_name = orig_name.replace("_", "-")
-        # Handle filename collisions across chunks by appending chunk index
-        if local_name in used_local_names:
-            base = Path(local_name).stem
-            suffix = Path(local_name).suffix
-            idx = 2
-            while f"{base}_{idx}{suffix}" in used_local_names:
-                idx += 1
-            local_name = f"{base}_{idx}{suffix}"
-        used_local_names.add(local_name)
-
-        local_path = img_dir / local_name
-        if not local_path.exists():
-            try:
-                img_resp = requests.get(remote_url)
-                if img_resp.status_code == 200:
-                    with open(local_path, "wb") as f:
-                        f.write(img_resp.content)
-            except Exception:
-                pass
-        # Rewrite reference in markdown
-        merged_md = merged_md.replace(rel_path, f"{stem}_paddle/img/{local_name}")
-
-    # Clean up empty image references and collapse blank lines
-    merged_md = re.sub(r"!\[[^\]]*\]\(\s*\)", "", merged_md)
-    merged_md = re.sub(r"\n{3,}", "\n\n", merged_md)
-
-    # Write merged markdown
+    merged = annotate_appendices("\n\n".join(parts), stem, pdf_page_labels=pdf_page_labels)
+    merged = re.sub(r"!\[[^\]]*\]\(\s*\)", "", merged)
+    merged = re.sub(r"\n{3,}", "\n\n", merged).rstrip() + "\n"
     md_path = output_dir / f"{stem}_paddle.md"
-    with open(md_path, "w", encoding="utf-8") as f:
-        f.write(merged_md)
-
+    # Stage beside the final document so relative image URLs resolve during validation.
+    with NamedTemporaryFile(dir=output_dir, suffix=".md.tmp", delete=False) as temp:
+        staged = Path(temp.name)
+    try:
+        staged.write_text(merged, encoding="utf-8")
+        validate_markdown(staged, len(parts) if expected_pages is None else expected_pages)
+        staged.replace(md_path)
+    finally:
+        staged.unlink(missing_ok=True)
+    if not keep_raw:
+        raw_path.unlink()
     return str(md_path)
 
 
 def process_single_pdf(pdf_path: str, output_dir: Path, api_key: str,
-                       optional_payload: dict, chunk_pages: int = MAX_PAGES) -> dict:
+                       optional_payload: dict, chunk_pages: int = MAX_PAGES, *, keep_raw=False) -> dict:
     """Process a single PDF: split (if needed) -> submit -> poll -> merge."""
     stem = Path(pdf_path).stem
 
     print(f"  Processing: {stem}")
     try:
         # Split large PDFs into chunks if needed
-        total_pages = len(PdfReader(pdf_path).pages)
+        reader = PdfReader(pdf_path)
+        total_pages = len(reader.pages)
+        labels = source_page_labels(reader)
         needs_split = total_pages > chunk_pages
         if needs_split:
             tmp_dir = output_dir / f"{stem}_tmp"
@@ -302,7 +269,8 @@ def process_single_pdf(pdf_path: str, output_dir: Path, api_key: str,
             jsonl_urls.append(result_data["resultUrl"]["jsonUrl"])
 
         # Download and merge results from all chunks
-        md_path = download_and_merge(jsonl_urls, output_dir, stem)
+        md_path = download_and_merge(jsonl_urls, output_dir, stem, expected_pages=total_pages,
+                                     keep_raw=keep_raw, pdf_page_labels=labels)
 
         # Cleanup temp split files
         if needs_split and tmp_dir.exists():
@@ -330,6 +298,7 @@ def main():
     parser = argparse.ArgumentParser(description="PaddleOCR async PDF-to-Markdown converter")
     parser.add_argument("--input", "-i", required=True, help="PDF file or directory")
     parser.add_argument("--output", "-o", default=DEFAULT_OUTPUT, help=f"Output directory (default: {DEFAULT_OUTPUT})")
+    parser.add_argument("--keep-raw", action="store_true", help="Retain raw OCR JSONL after successful conversion")
     parser.add_argument("--api-key", default=None, help="API key (or set PADDLE_API_KEY)")
     parser.add_argument("--workers", "-w", type=int, default=3, help="Parallel workers (default: 3)")
     parser.add_argument("--start", type=int, default=0, help="Start index in file list")
@@ -404,14 +373,14 @@ def main():
     optional_payload = build_optional_payload(args)
 
     print(f"Found {len(pdfs)} PDF(s) | Output: {output_dir} | Workers: {args.workers}")
-    print(f"Output per PDF: {{stem}}_paddle.md + {{stem}}_paddle/ (jsonl.jsonl + img/)")
+    print(f"Output per PDF: {{stem}}_paddle.md + {{stem}}_paddle/img/ (JSONL retained with --keep-raw)")
     print(f"Payload: {json.dumps(optional_payload, ensure_ascii=False)}\n")
 
     results = []
     with ThreadPoolExecutor(max_workers=args.workers) as executor:
         futures = {
             executor.submit(process_single_pdf, pdf, output_dir, api_key,
-                            optional_payload, args.chunk_pages): pdf
+                            optional_payload, args.chunk_pages, keep_raw=args.keep_raw): pdf
             for pdf in pdfs
         }
         for i, future in enumerate(as_completed(futures), 1):
@@ -423,6 +392,8 @@ def main():
     ok = sum(1 for r in results if r["status"] == "success")
     fail = sum(1 for r in results if r["status"] != "success")
     print(f"\n{'='*50}\nDone: {ok} success, {fail} failed\n{'='*50}")
+    if fail:
+        sys.exit(2)
 
 
 if __name__ == "__main__":

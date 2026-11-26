@@ -55,17 +55,17 @@
 - This skill can be considered the starting point of my attempt to create a series of skills
 
   - Initially, it was just a template modified from the [`PekingU` theme template](https://cn.overleaf.com/latex/templates/pku-beamer-theme-advanced/dwhrsfjszcng) that I had been using for a long time
-  - About a week after DeepSeek-V4-Pro was released, I connected it to Claude Code. I found that with just the original text and beamer template and no compilation requirements, it successfully ran and produced a PDF in less than 3 minutes, with more details than the original template (such as defining two new commands `\term` and `\scrpt` for better visual effects). I was so shocked that I sat paralyzed — this workflow was too valuable not to save and reuse. Then through a round of vibe coding, I created a new traditional Chinese cyan color scheme (天青, 青雘, etc.) while maintaining the original template's style
+  - About a week after DeepSeek-V4-Pro was released, I connected it to Claude Code to make the slides for a course presentation. All I gave it was the original text, the memo I had written, two `.pdf` images I had cropped by hand for insertion (I had not yet developed `/mineru-pdf-crop` at that time), and the beamer template — without asking it to compile. It ran through in about 5 minutes and produced a PDF with more detail than the original template (for example, it defined two new commands `\term` and `\scrpt` for better visual effects). I was so shocked that I sat there paralyzed — too good not to save and reuse. Then, through a round of vibe coding, I created a new traditional Chinese cyan color scheme (天青, 青雘, etc.) while keeping the look of the original template
   - Finally, Codex designed and generated several other color schemes, including common university theme color schemes + Morandi cool/warm color schemes
 
-- Although the name includes `econ`, it is by no means limited to this. It can be conveniently used for any academic-style LaTex Beamer, and you can also embed your own preferred templates. Contributions and co-development are welcome
+- Although the name includes `econ`, it is by no means limited to this. Anything that needs an academic-style LaTex Beamer can be built conveniently, and **embedding your own preferred template is encouraged**. Contributions and co-development are welcome
 
 - Although originally designed for course presentations, it can also be used for other task scenarios
 
   - Presenting others' papers: **recommended to complete within the `/econ-pre` workflow (see below)** to aid deeper understanding
   - Presenting your own work: you need to provide agent-readable source text (`.pdf` documents require OCR; usually `.docx` can be read directly by the agent with other tools, or converted to `.md` via MinerU) + an outline (reflecting your own understanding)
 
-- For your own work, if you want "one-sentence generation" of slides, the prompt should at least provide input materials, page limits, and template choice, e.g.
+- For your own work, if you want "one-sentence generation" of slides, the prompt should at least provide **input materials, page limits, and template choice**, e.g.
 
   ```
   First do OCR /paddle-ocr-re on @my-paper.pdf, then based on the OCR results and my images @my/path/figs/, /econ-slides-beamer make a slides `pre.tex`, save to the default path, about 20 pages of content excluding title, table of contents and ending pages, Morandi cool color theme

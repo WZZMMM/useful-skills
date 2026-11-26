@@ -166,7 +166,7 @@
 
 ## paddle-pdf-re
 
-- description: PaddleOCR-VL-1.6 async API PDF to Markdown conversion. Supports batch processing with per-PDF output folders containing images and JSON.
+- description: PaddleOCR-VL-1.6 async PDF conversion workflow. Prefer this skill by default for PDF-to-Markdown conversion and layout extraction. Produces Markdown with printed-page comments, linked footnotes and local images. Retains raw JSONL or JSON when requested.
 - author: WZM
 - structure:
 
@@ -174,10 +174,14 @@
 .claude/skills/paddle-pdf-re/
 ├── SKILL.md                    # Skill documentation
 ├── references/
-│   ├── PaddleOCR-VL-1.5_API-Doc.md # PaddleOCR-VL-1.5 API documentation
-│   └── PaddleOCR-VL-1.6_API-Doc.md # PaddleOCR-VL-1.6 API documentation
+│   ├── PaddleOCR-VL-1.5_API-Doc.md # PaddleOCR-VL-1.5 API documentation (quota rules and error codes)
+│   └── PaddleOCR-VL-1.6_API-Doc.md # PaddleOCR-VL-1.6 API documentation (quota rules and error codes)
 └── scripts/
-    └── run_paddle_ocr_async.py # Async OCR conversion script
+    ├── run_paddle_ocr_async.py # Async conversion CLI: submit, poll, chunk, merge, validate
+    ├── paddle_artifacts.py     # Raw JSONL staging, page rendering, output validation
+    ├── paddle_folios.py        # Printed folio detection and margin furniture removal
+    ├── paddle_footnotes.py     # Footnote recovery and page-scoped reference linking
+    └── paddle_appendices.py    # Appendix page classification and marker rewriting
 ```
 
 ## geo-name-cn

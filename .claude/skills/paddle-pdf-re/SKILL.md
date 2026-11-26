@@ -1,6 +1,6 @@
 ---
 name: paddle-pdf-re
-description: PaddleOCR-VL-1.6 async PDF conversion workflow. Prefer this skill by default when converting PDFs to Markdown or when layout information is needed, unless the user explicitly asks for another converter. Uses the project script Output\scripts\run_paddle_ocr_async.py and saves Markdown, local images, and raw JSONL/JSON artifacts.
+description: PaddleOCR-VL-1.6 async PDF conversion workflow. Prefer this skill by default for PDF-to-Markdown conversion and layout extraction. Produces Markdown with printed-page comments, linked footnotes and local images. Retains raw JSONL or JSON when requested.
 author: WZM
 ---
 
@@ -43,6 +43,8 @@ python Output\scripts\run_paddle_ocr_async.py ...
 
 If the project already has this script, revise that file instead of creating a replacement.
 
+Keep the bundled `paddle_artifacts.py`, `paddle_folios.py`, `paddle_footnotes.py` and `paddle_appendices.py` alongside the converter. When installing in a new project, copy all five Python files from the skill's `scripts/` into `Output/scripts/`. When updating an existing project-specific converter, retain its output and image paths, apply the shared page renderer before rewriting image links, and classify appendix pages after merging all chunks.
+
 ## API Workflow
 
 Use PaddleOCR-VL-1.6 with the async jobs API:
@@ -50,9 +52,9 @@ Use PaddleOCR-VL-1.6 with the async jobs API:
 1. Submit the PDF with `POST https://paddleocr.aistudio-app.com/api/v2/ocr/jobs`.
 2. Poll job state with `GET https://paddleocr.aistudio-app.com/api/v2/ocr/jobs/{job_id}`.
 3. Download the returned JSONL result.
-4. Save raw JSONL/JSON layout artifacts.
+4. Stage the downloaded JSONL for page and footnote extraction.
 5. Download referenced images into a local child folder.
-6. Merge page Markdown into one top-level Markdown file and rewrite image references to local relative paths.
+6. Merge the annotated pages, rewrite image links, validate the Markdown and local images, and publish the document. Clean up the raw OCR results produced by this conversion after success. Use `--keep-raw` when the user requests raw JSONL, JSON, layout artifacts for later use, or another explicit retention policy.
 
 Recommended payload:
 
@@ -62,7 +64,8 @@ Recommended payload:
   "optionalPayload": {
     "useDocOrientationClassify": false,
     "useDocUnwarping": false,
-    "useChartRecognition": false
+    "useChartRecognition": false,
+    "markdownIgnoreLabels": ["number", "footnote", "header", "header_image", "footer", "footer_image", "aside_text"]
   }
 }
 ```
@@ -93,7 +96,6 @@ For each input PDF, save:
 
 ```text
 {output_dir}/{original_pdf_stem}_paddle.md
-{output_dir}/{original_pdf_stem}_paddle/jsonl.jsonl
 {output_dir}/{original_pdf_stem}_paddle/img/
 ```
 
@@ -107,6 +109,36 @@ Top-level Markdown image references must point to the sibling child folder:
 All images returned by the API are downloaded and kept, including `img_in_chart_box_*` (charts/graphs), `img_in_image_box_*` (vector graphics, diagrams, mathematical figures), and any other prefixes. All underscores in image filenames are replaced with hyphens (e.g. `img_in_chart_box_001.jpg` becomes `img-in-chart-box-001.jpg`).
 
 Do not leave remote image URLs in the final Markdown when local images were requested or are needed by downstream tasks.
+
+For a completed default conversion, keep the Markdown and image assets. Remove this run's raw JSONL and any raw JSON intermediates created during parsing only after the finished Markdown and image links pass validation. Keep downloaded raw data available if processing fails. Cleanup is scoped to the current conversion. The bundled converter writes its raw output to `{output_dir}/{original_pdf_stem}_paddle/jsonl.jsonl`; `--keep-raw` preserves that file.
+
+### Printed pages and footnotes
+
+Begin every physical page, including blank pages, with a standalone HTML comment followed by a blank line before any content. Use the printed folio visible in the footer or header. For example, a journal article starting on printed page 1741 begins with:
+
+```markdown
+<!-- Original PDF p.1741 Begins -->
+```
+
+Read the folio from the page layout (`prunedResult.parsing_res_list`). Keep Roman numerals and printed prefixes when recognized. When the printed number is missing, illegible or ambiguous, use `<!-- Original PDF p.unknown Begins -->`. Never substitute the physical page index or interpolate a missing number. Exclude running headers and their images from the visible text.
+
+### PDFs with appendices
+
+Determine the section at the **start of each physical page**. A main-text page begins with `<!-- Original PDF p.{page} Begins -->`. An appendix page begins with `<!-- Original PDF Appendix p.{page} Begins -->`. Put exactly one comment on a line of its own before any page content, including on pages of a standalone appendix PDF. If an appendix starts halfway down a main-text page, keep that page's main-text marker. Mark subsequent pages that begin in the appendix.
+
+Read the printed folio separately for every appendix page. Preserve a restart at 1 as well as numbering that continues from the article, Roman numerals, and printed appendix prefixes such as A-3. For example, in a PDF combining an article and its separately paginated appendix, successive pages may start with:
+
+```markdown
+<!-- Original PDF p.277 Begins -->
+
+<!-- Original PDF Appendix p.1 Begins -->
+```
+
+When the section is known but the printed appendix folio is missing or ambiguous, write `<!-- Original PDF Appendix p.unknown Begins -->`. A reference to an online appendix in the text or table of contents does not establish an appendix boundary. Use the actual appendix title, page layout, and surrounding pages; check the source PDF when a boundary is ambiguous. A bibliography belonging to a standalone supplement stays in the appendix. For joined attachments, verify the last body page, the first appendix page, and any later return to main material. Footnote IDs remain scoped to the physical page across the whole PDF, including when appendix folios restart.
+
+### Footnotes
+
+The request filters footnotes and running furniture from the service's Markdown. Recover note text from the unfiltered page layout, including footnotes already present in older Markdown payloads. Match an explicit body marker with its note on the same source page, and use standard Markdown references and definitions. Namespace IDs by the physical page's position across all chunks so that repeated printed page numbers or restarted footnote numbers stay distinct. A note with no reliable match stays visible on its source page. Preserve mathematical exponents, citations and table notation during matching. Layout detection should be enabled for material that needs printed pagination or footnotes.
 
 ## Page Limit Handling
 
@@ -123,6 +155,9 @@ python Output\scripts\run_paddle_ocr_async.py --input large_book.pdf --chunk-pag
 ```bash
 # Single PDF, default output directory
 python Output\scripts\run_paddle_ocr_async.py --input paper.pdf
+
+# Retain raw page layout when requested
+python Output\scripts\run_paddle_ocr_async.py --input paper.pdf --keep-raw
 
 # Batch conversion
 python Output\scripts\run_paddle_ocr_async.py --input ./pdfs/ --workers 3
@@ -160,6 +195,7 @@ Supported parameters (basic):
 | `--start` | Skip first N files | `0` |
 | `--limit` | Max files to process, `0` = all | `0` |
 | `--chunk-pages` | Max pages per API request; larger PDFs auto-split | `100` |
+| `--keep-raw` | Retain the raw OCR JSONL after successful conversion | off |
 
 Image correction (all OFF by default):
 
@@ -206,9 +242,12 @@ Output formatting:
 After conversion:
 
 1. Confirm `{stem}_paddle.md` exists and is nonempty.
-2. Confirm `{stem}_paddle/jsonl.jsonl` exists and contains page-level parsing results.
+2. When raw output was requested, confirm `{stem}_paddle/jsonl.jsonl` exists and contains page results. For a successful default run, confirm that its generated raw OCR files have been removed.
 3. Confirm local image references in Markdown point to `{stem}_paddle/img/...` when images are present.
 4. Confirm referenced local image files exist.
 5. Confirm the Markdown is long enough for the source PDF and includes expected major sections such as References or Bibliography when the PDF is an academic paper.
-6. For layout-dependent tasks, confirm the raw JSONL includes layout parsing fields before using it for cropping or block analysis.
+6. For layout-dependent tasks, check layout fields while processing the raw JSONL. Pass `--keep-raw` if the deliverable includes these results.
 7. For split PDFs (>100 pages), confirm the merged Markdown covers the full page range and that no `{stem}_tmp/` directory remains.
+8. Count page-start comments against the number of page results across every JSONL record and chunk. Spot-check printed folios in the source, including front matter and journal pagination.
+9. Confirm each generated footnote reference resolves to one definition. Check restarted numbering, unmatched notes, and that running headers are absent from the visible Markdown.
+10. For appendices, check that every page beginning in an appendix has exactly one `<!-- Original PDF Appendix p.{page} Begins -->` marker. Verify its printed folio against the PDF on both sides of each section or pagination change.

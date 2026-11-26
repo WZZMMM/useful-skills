@@ -194,4 +194,25 @@ POST /restructure-pages
 
 对于返回的数据结构及字段说明，请查阅[文档](https://www.paddleocr.ai/latest/version3.x/pipeline_usage/PaddleOCR-VL.html)。
 
+## API 配额规则
+
+- 每用户每日 **20,000 页**上限（按模型计；默认 3,000 页，已申请提额）。
+- 超出日配额后，请求返回 **429 (Too Many Requests)**。
+- 单文件建议不超过 100 页；超出时仅处理前 100 页。
+- 配额不足可申请提额。
+
+## 错误码
+
+| 错误码 | 含义 | 处理建议 |
+|--------|------|----------|
+| 403 | Token 错误 | 检查 Token 及对应 URL |
+| 413 | 请求体过大 | 减少页数或文件大小 |
+| 422 | 参数无效 | 参考 `errorMsg` 字段 |
+| 429 | 日配额超限 | 换模型或稍后重试 |
+| 500 | 服务端错误 | 频繁出现时联系官方 |
+| 503 | 并发请求过多 | 稍后重试 |
+| 504 | 网关超时 | 稍后重试 |
+
+参考来源：[PaddleOCR API 文档](https://ai.baidu.com/ai-doc/AISTUDIO/Xmjclapam)
+
 **注**：如果在使用过程中遇到问题，欢迎随时在 [issue](https://github.com/PaddlePaddle/PaddleOCR/issues) 区提交反馈。

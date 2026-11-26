@@ -166,7 +166,7 @@
 
 ## paddle-pdf-re
 
-- description: PaddleOCR-VL-1.6 异步 API PDF 转 Markdown 技能。支持批量转换，每个 PDF 输出一个带图片和 JSON 的子文件夹。
+- description: PaddleOCR-VL-1.6 异步 PDF 转换工作流。默认用于 PDF 转 Markdown 与布局信息提取，产出带印刷页码注释、已链接脚注和本地图片的 Markdown；需要时保留原始 JSONL 或 JSON。
 - author: WZM
 - structure:
 
@@ -174,10 +174,14 @@
 .claude/skills/paddle-pdf-re/
 ├── SKILL.md                    # 技能文档
 ├── references/
-│   ├── PaddleOCR-VL-1.5_API-Doc.md # PaddleOCR-VL-1.5 API 文档
-│   └── PaddleOCR-VL-1.6_API-Doc.md # PaddleOCR-VL-1.6 API 文档
+│   ├── PaddleOCR-VL-1.5_API-Doc.md # PaddleOCR-VL-1.5 API 文档（配额规则与错误码）
+│   └── PaddleOCR-VL-1.6_API-Doc.md # PaddleOCR-VL-1.6 API 文档（配额规则与错误码）
 └── scripts/
-    └── run_paddle_ocr_async.py # 异步 OCR 转换脚本
+    ├── run_paddle_ocr_async.py # 异步转换 CLI：提交、轮询、分块、合并、校验
+    ├── paddle_artifacts.py     # 原始 JSONL 落盘、页面渲染与产物校验
+    ├── paddle_folios.py        # 印刷页码识别与页眉页脚清理
+    ├── paddle_footnotes.py     # 脚注恢复与按物理页链接
+    └── paddle_appendices.py    # 附录页判定与页码标记改写
 ```
 
 ## geo-name-cn
